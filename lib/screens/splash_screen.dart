@@ -21,9 +21,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      backgroundColor: Colors.green,
       body: Center(
         child: Text(
-          'Loading...',
+          'Expense Tracking...',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
         ),
       ),
