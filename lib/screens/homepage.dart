@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 import '../domains/expence_domain.dart';
+import 'expace_add.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -15,6 +14,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final titleController = TextEditingController();
   final moneyController = TextEditingController();
+  DateTime selectedDate = DateTime.now();
 
   List<Expense> expenses = [];
 
@@ -22,8 +22,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Expanses'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: const Text('Expenses'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -32,21 +32,24 @@ class _MyHomePageState extends State<MyHomePage> {
               ListTile(
                 title: Text(
                   "₹ ${expenses[a].money}",
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: Colors.purple, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    color: Colors.purple,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 subtitle: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(expenses[a].title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(
-                                color: Colors.lightGreen,
-                                fontWeight: FontWeight.bold)),
                     Text(
-                        "${expenses[a].date.year.toString()}-${expenses[a].date.month.toString().padLeft(2, '0')}-${expenses[a].date.day.toString().padLeft(2, '0')}"),
+                      expenses[a].title,
+                      style: const TextStyle(
+                        color: Colors.lightGreen,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "${expenses[a].date.year}-${expenses[a].date.month.toString().padLeft(2, '0')}-${expenses[a].date.day.toString().padLeft(2, '0')}",
+                    ),
                   ],
                 ),
               ),
@@ -55,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          addItem();
+          _showAddDialog();
         },
         tooltip: 'Add New',
         child: const Icon(Icons.add),
@@ -63,101 +66,35 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  addItem() {
+  _showAddDialog() {
     showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      const Expanded(flex: 1, child: Text('Money : ')),
-                      Expanded(
-                          flex: 3,
-                          child: TextField(
-                            controller: moneyController,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9]')),
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.monetization_on),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16.0),
-                              ),
-                              hintStyle: const TextStyle(color: Colors.grey),
-                              hintText: "Type in your text",
-                              fillColor: Colors.white70,
-                            ),
-                          ))
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      const Expanded(flex: 1, child: Text('Title : ')),
-                      Expanded(
-                          flex: 3,
-                          child: TextField(
-                            controller: titleController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16.0),
-                              ),
-                              hintStyle: const TextStyle(color: Colors.grey),
-                              hintText: "Type in your text",
-                              fillColor: Colors.white70,
-                            ),
-                          ))
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      const Expanded(flex: 1, child: Text('Date : ')),
-                      Expanded(
-                          flex: 3,
-                          child: InkWell(
-                            onTap: () {},
-                            child: Text(
-                              "date",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(color: Colors.blue),
-                            ),
-                          ))
-                    ],
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      setState(() {
-                        expenses.add(Expense(
-                            title: titleController.text,
-                            money: moneyController.text,
-                            date: DateTime.now()));
-                        titleController.clear();
-                        moneyController.clear();
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Okay')),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Cancel')),
-              ],
-            ));
+      context: context,
+      builder: (_) => AlertDialog(
+        content: AddExpenseDialog(
+          moneyController: moneyController,
+          titleController: titleController,
+          selectedDate: selectedDate,
+          onDateChanged: (DateTime date) {
+            setState(() {
+              selectedDate = date;
+            });
+          },
+          onSubmit: () {
+            setState(() {
+              expenses.add(Expense(
+                title: titleController.text,
+                money: moneyController.text,
+                date: selectedDate,
+              ));
+              titleController.clear();
+              moneyController.clear();
+              selectedDate = DateTime.now();
+            });
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
   }
 }
+
