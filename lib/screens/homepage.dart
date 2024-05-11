@@ -16,21 +16,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final titleController = TextEditingController();
   final moneyController = TextEditingController();
 
-  DateTime selectedDate = DateTime.now();
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
-  }
-
   List<Expense> expenses = [];
 
   @override
@@ -45,11 +30,21 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             for (int a = 0; a < expenses.length; a++)
               ListTile(
-                title: Text(expenses[a].money),
+                title: Text(
+                  "₹ ${expenses[a].money}",
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Colors.purple, fontWeight: FontWeight.bold),
+                ),
                 subtitle: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(expenses[a].title),
+                    Text(expenses[a].title,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(
+                                color: Colors.lightGreen,
+                                fontWeight: FontWeight.bold)),
                     Text(
                         "${expenses[a].date.year.toString()}-${expenses[a].date.month.toString().padLeft(2, '0')}-${expenses[a].date.day.toString().padLeft(2, '0')}"),
                   ],
@@ -71,101 +66,98 @@ class _MyHomePageState extends State<MyHomePage> {
   addItem() {
     showDialog(
         context: context,
-        builder: (_) => StatefulBuilder(builder: (context, setState) {
-              return AlertDialog(
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      children: [
-                        const Expanded(flex: 1, child: Text('Money : ')),
-                        Expanded(
-                            flex: 3,
-                            child: TextField(
-                              controller: moneyController,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9]')),
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.monetization_on),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                hintText: "Type in your text",
-                                fillColor: Colors.white70,
+        builder: (_) => AlertDialog(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      const Expanded(flex: 1, child: Text('Money : ')),
+                      Expanded(
+                          flex: 3,
+                          child: TextField(
+                            controller: moneyController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(Icons.monetization_on),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16.0),
                               ),
-                            ))
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        const Expanded(flex: 1, child: Text('Title : ')),
-                        Expanded(
-                            flex: 3,
-                            child: TextField(
-                              controller: titleController,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                hintText: "Type in your text",
-                                fillColor: Colors.white70,
+                              hintStyle: const TextStyle(color: Colors.grey),
+                              hintText: "Type in your text",
+                              fillColor: Colors.white70,
+                            ),
+                          ))
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      const Expanded(flex: 1, child: Text('Title : ')),
+                      Expanded(
+                          flex: 3,
+                          child: TextField(
+                            controller: titleController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16.0),
                               ),
-                            ))
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        const Expanded(flex: 1, child: Text('Date : ')),
-                        Expanded(
-                            flex: 3,
-                            child: InkWell(
-                              onTap: () {},
-                              child: Text(
-                                "${selectedDate.year.toString()}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(color: Colors.blue),
-                              ),
-                            ))
-                      ],
-                    ),
-                  ],
-                ),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-
-                        setState(() {
-                          expenses.add(Expense(
-                              title: titleController.text,
-                              money: moneyController.text,
-                              date: DateTime.now()));
-                          titleController.clear();
-                          moneyController.clear();
-                        });
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Okay')),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Cancel')),
+                              hintStyle: const TextStyle(color: Colors.grey),
+                              hintText: "Type in your text",
+                              fillColor: Colors.white70,
+                            ),
+                          ))
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      const Expanded(flex: 1, child: Text('Date : ')),
+                      Expanded(
+                          flex: 3,
+                          child: InkWell(
+                            onTap: () {},
+                            child: Text(
+                              "date",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: Colors.blue),
+                            ),
+                          ))
+                    ],
+                  ),
                 ],
-              );
-            }));
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      setState(() {
+                        expenses.add(Expense(
+                            title: titleController.text,
+                            money: moneyController.text,
+                            date: DateTime.now()));
+                        titleController.clear();
+                        moneyController.clear();
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Okay')),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel')),
+              ],
+            ));
   }
 }
