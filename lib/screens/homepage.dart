@@ -16,7 +16,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final moneyController = TextEditingController();
   DateTime selectedDate = DateTime.now();
 
-  List<Expense> expenses = [];
+  List<Expense> expenses = [];// type name value
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _showAddDialog();
         },
         tooltip: 'Add New',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.shopping_bag),
       ),
     );
   }

@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _textAnimation = IntTween(begin: 0, end: "Expense Tracking...".length).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Curves.easeInOut,
+        curve: Curves.bounceIn,
       ),
     );
 
@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           builder: (context, child) {
             final int length = _textAnimation.value.clamp(0, "Expense Tracking...".length);
             return Text(
-              "Expense \nTracking\n...".substring(0, length),
+              "Expense \nTracking...".substring(0, length),
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 40, color: Colors.white),
             );
           },

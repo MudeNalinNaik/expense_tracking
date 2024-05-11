@@ -3,10 +3,11 @@ import 'package:flutter/services.dart';
 
 class AddExpenseDialog extends StatefulWidget {
   final DateTime selectedDate;
-  final ValueChanged<DateTime> onDateChanged;
-  final VoidCallback onSubmit;
   final TextEditingController moneyController;
   final TextEditingController titleController;
+  final ValueChanged<DateTime> onDateChanged;
+  final VoidCallback onSubmit;
+
 
   const AddExpenseDialog({
     super.key,
@@ -51,7 +52,7 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                   FilteringTextInputFormatter.digitsOnly
                 ],
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.monetization_on),
+                  prefixIcon: const Icon(Icons.currency_rupee,size:16,),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16.0),
                   ),
